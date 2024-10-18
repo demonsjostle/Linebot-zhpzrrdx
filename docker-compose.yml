@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  django_app:
+    build:
+      context: ./backend
+    env_file:
+      - ./backend/.env
+    volumes:
+      - static_vol:/app/staticfiles
+      - media_vol:/app/media
+      - sqlite3_vol:/app/db
+    ports:
+      - "8000:8000"
+
+  nginx:
+    build:
+      context: ./nginx
+    volumes:
+      - static_vol:/app/staticfiles
+      - media_vol:/app/media
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django_app
+
+volumes:
+  static_vol:
+  media_vol:
+  sqlite3_vol:

@@ -1,0 +1,9 @@
+{% extends "admin/change_list.html" %} {% block object-tools %} {{ block.super}}
+{% load jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+<div>
+  <a class="btn {{ jazzmin_ui.button_classes.warning }}" href="{% url 'admin:fine_tuned_action' %}">Tune all data</a>
+</div>
+
+{% endblock %}

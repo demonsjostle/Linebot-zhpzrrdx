@@ -1,0 +1,9 @@
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
+Error during training: [Errno 32] Broken pipe
