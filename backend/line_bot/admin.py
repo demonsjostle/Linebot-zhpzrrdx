@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import AutoChat, Notification
+from .models import AutoChat, Notification, Tag
 from django.urls import path
 from django.http import HttpResponseRedirect
 from .chatbot_model.chatbot_model import create_chatbot_model
@@ -86,3 +86,4 @@ class AutoChatAdmin(admin.ModelAdmin):
     
 admin.site.register(AutoChat, AutoChatAdmin)
 admin.site.register(Notification)
+admin.site.register(Tag)

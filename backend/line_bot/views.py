@@ -96,9 +96,19 @@ def handle_text_message(event):
         mess = TextMessage(text=user_id)
     else:
         response_tag, response_answer = generate_response(message)
-        mess = TextMessage(text=response_answer)
 
-    line_bot_api.reply_message(ReplyMessageRequest(
-        replyToken=event.reply_token, messages=[mess]))
+        if "--img--" in response_answer:
+            split_answer = response_answer.split("--img--")
+            answer = split_answer[0]
+            img_url = split_answer[1]
+            mess = TextMessage(text=answer)
+            mess_img = ImageMessage(originalContentUrl=img_url, previewImageUrl=img_url)
+            line_bot_api.reply_message(ReplyMessageRequest(replyToken=event.reply_token, messages=[mess, mess_img]))
+        else:
+            mess = TextMessage(text=response_answer)
+            line_bot_api.reply_message(ReplyMessageRequest(
+                replyToken=event.reply_token, messages=[mess]))
+
+
    
 

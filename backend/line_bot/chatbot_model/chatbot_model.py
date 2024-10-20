@@ -76,7 +76,7 @@ def create_chatbot_model():
     #compiling the model
     model.compile(loss="sparse_categorical_crossentropy",optimizer='adam',metrics=['accuracy'])
     #training the model
-    epochs = 10000
+    epochs = 1900
     model.fit(x_train,y_train,epochs=epochs)
     model_path = Path.joinpath(settings.BASE_DIR,
                                    f'line_bot/chatbot_model/nn.keras')
@@ -161,11 +161,13 @@ def generate_response(prediction_input):
     output = output.argmax()
     # print(f"output max: {con}")
     #finding the right tag and predicting
-    CONFIDENCE_THRESHOLD = 0.5
+    CONFIDENCE_THRESHOLD = 0.9
+    print(max_confidence)
     if max_confidence < CONFIDENCE_THRESHOLD:
         return "unknown", "🙅 ❌ \nไม่สามารถเข้าใจคำถามได้ รบกวนปรับเปลี่ยนคำถามเล็กน้อยและลองใหม่อีกครั้งนะคะ ❌🙅"
-    else:
+    else: 
         response_tag = le.inverse_transform([output])[0]
+        print(responses[response_tag])
         response_answer = random.choice(responses[response_tag]) 
         return response_tag, response_answer
     # print("Going Merry : ",random.choice(responses[response_tag]))
