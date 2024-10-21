@@ -94,6 +94,8 @@ def handle_text_message(event):
 
     if "#myid" in message:
         mess = TextMessage(text=user_id)
+        line_bot_api.reply_message(ReplyMessageRequest(
+                replyToken=event.reply_token, messages=[mess]))
     else:
         response_tag, response_answer = generate_response(message)
 
