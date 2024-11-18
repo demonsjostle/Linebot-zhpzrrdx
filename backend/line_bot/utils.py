@@ -3,7 +3,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from pathlib import Path
 from django.conf import settings
-from .models import AutoChat
+from .models import AutoChat, ChatRecord
 
 def save_chatbot_script_to_json():
     # Initialize the intents structure
@@ -42,14 +42,53 @@ def save_chatbot_script_to_json():
             })
     
     # Define the path to save the JSON file
-    json_path = Path.joinpath(settings.BASE_DIR, 'line_bot/chatbot_model/content.json')
+    json_path = Path.joinpath(settings.BASE_DIR, 'line_bot/ai_data/content.json')
 
     # Write the data to the JSON file
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(chatbot_data, f, ensure_ascii=False, indent=4, cls=DjangoJSONEncoder)
     
     print("Chatbot script saved to content.json")
+    return True
 
 
+def generate_simple_answer(question: str):
+    # Define the path to load the JSON file
+    json_path = Path.joinpath(settings.BASE_DIR, 'line_bot/ai_data/content.json')
+
+    # Load the chatbot data from the JSON file
+    with open(json_path, 'r', encoding='utf-8') as f:
+        chatbot_data = json.load(f)
+    
+    # Loop through each intent in the chatbot data
+    for intent in chatbot_data['intents']:
+        # Check if any keyword in the 'input' list matches the question
+        for input_keyword in intent['input']:
+            if input_keyword.lower() in question.lower():  # Case-insensitive comparison
+                # Return the first response found
+                return intent['tag'],intent['responses'][0]
+    
+    # If no match is found, return a default response
+    return "unknown", "🙅 ❌ \nไม่สามารถเข้าใจคำถามได้ รบกวนปรับเปลี่ยนคำถามเล็กน้อยและลองใหม่อีกครั้งนะคะ ❌🙅"
 
 
+    
+def record_chat(question, answer, user=None, source="Simple-AI"):
+    """
+    Function to record a chat interaction in the database.
+    
+    Args:
+        question (str): The question asked.
+        answer (str): The answer provided.
+        user (User, optional): The user who asked the question. Defaults to None.
+        source (str, optional): The source of the answer (e.g., AI, human). Defaults to "AI". 
+    Returns:
+        ChatRecord: The saved chat record instance.
+    """
+    chat_record = ChatRecord.objects.create(
+        question=question,
+        answer=answer,
+        user=user,
+        source=source
+    )
+    return chat_record

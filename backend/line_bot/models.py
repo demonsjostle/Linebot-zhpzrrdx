@@ -33,3 +33,28 @@ class Notification(models.Model):
         else:
             return self.line_uid
 
+class ChatRecord(models.Model):
+    question = models.TextField()
+    answer = models.TextField()
+    user = models.CharField(max_length=100, blank=True, null=True)  
+    timestamp = models.DateTimeField(auto_now_add=True)  # When the chat record was created 
+    source = models.CharField(max_length=100, blank=True, null=True)  # Where the answer was sourced (e.g., AI, human, etc.)
+
+    class Meta:
+        verbose_name_plural = "บันทึกแชท"
+
+    def __str__(self):
+        return f"ChatRecord({self.user}, {self.timestamp})"
+
+
+
+class GPTConfig(models.Model):
+    system = models.TextField()
+    fine_tuned_model = models.CharField(
+        max_length=255, default=None, null=True, blank=True)
+    in_use = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = "ตั้งค่า GPT"
+    def __str__(self):
+        return self.system

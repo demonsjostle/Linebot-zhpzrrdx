@@ -1,11 +1,11 @@
 from django.contrib import admin, messages
-from .models import AutoChat, Notification, Tag
+from .models import AutoChat, Notification, Tag, ChatRecord, GPTConfig
 from django.urls import path
 from django.http import HttpResponseRedirect
-from .chatbot_model.chatbot_model import create_chatbot_model
 from .utils import save_chatbot_script_to_json
 from decouple import config
 from django.utils import timezone
+from .openai_utils import prepare_gpt_dataset, fine_tuning_gpt
 
 
 # line
@@ -62,8 +62,13 @@ class AutoChatAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def fine_tuned_action_view(self, request):
-        save_chatbot_script_to_json()
-        success = create_chatbot_model() 
+        success=False
+
+        save_chatbot_script_to_json() 
+        prepare_gpt_dataset()
+        status = fine_tuning_gpt()
+        success = status
+
         message = ""
         if success:
             self.message_user(request, "เทรนข้อมูลสำเร็จ")
@@ -83,7 +88,13 @@ class AutoChatAdmin(admin.ModelAdmin):
      
         return HttpResponseRedirect("../")
 
+class ChatRecordAdmin(admin.ModelAdmin):
+    search_fields = ['question', 'answer']
+    list_display = ('question', 'answer')
     
 admin.site.register(AutoChat, AutoChatAdmin)
 admin.site.register(Notification)
 admin.site.register(Tag)
+admin.site.register(ChatRecord, ChatRecordAdmin)
+admin.site.register(GPTConfig)
+
